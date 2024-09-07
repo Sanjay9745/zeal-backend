@@ -14,9 +14,15 @@ module.exports.register = async (req, res) => {
         if (existingAdmin) {
             return res.status(400).json({ success: false, message: 'Username or email already exists' });
         }
+        //hash password
+        let hashedPassword = bcrypt.hashSync(password, 10);
 
         // Create a new admin
-        const newAdmin = new Admin({ username, password, email });
+        const newAdmin = new Admin({
+            username,
+            password: hashedPassword,
+            email
+        });
 
         // Save the admin (password will be hashed by the pre-save hook)
         await newAdmin.save();

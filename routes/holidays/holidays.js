@@ -51,9 +51,20 @@ module.exports.getSingle = async (req, res) => {
 // Add a new Holiday
 module.exports.add = async (req, res) => {
     try {
-        const images = req.files['images'] ? req.files['images'].map(file => file.path) : [];
-        const thumbnail = req.files['thumbnail'] ? req.files['thumbnail'][0].path : '';
-        const pdfs = req.files['pdf'] ? req.files['pdf'].map(file => ({ type: 'application/pdf', link: file.path })) : [];
+        // Get images from files or fallback to req.body
+        const images = req.files && req.files['images'] 
+            ? req.files['images'].map(file => file.path) 
+            : req.body.images ? JSON.parse(req.body.images) : [];
+        
+        // Get thumbnail from files or fallback to req.body
+        const thumbnail = req.files && req.files['thumbnail'] 
+            ? req.files['thumbnail'][0].path 
+            : req.body.thumbnail || '';
+        
+        // Get PDFs from files or fallback to req.body
+        const pdfs = req.files && req.files['pdf'] 
+            ? req.files['pdf'].map(file => ({ type: 'application/pdf', link: file.path })) 
+            : req.body.pdfs ? JSON.parse(req.body.pdfs) : [];
 
         const newHoliday = new Holiday({
             ...req.body,
@@ -67,9 +78,10 @@ module.exports.add = async (req, res) => {
         res.status(200).json({ success: true, results: savedHoliday });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, error: error.message, message: "Error adding Holiday" });
+        res.status(500).json({ success: false, error: error.message, message: "Error adding holiday" });
     }
 };
+
 
 // Update an existing Holiday by ID
 module.exports.update = async (req, res) => {
