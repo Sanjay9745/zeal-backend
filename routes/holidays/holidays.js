@@ -54,17 +54,17 @@ module.exports.add = async (req, res) => {
         // Get images from files or fallback to req.body
         const images = req.files && req.files['images'] 
             ? req.files['images'].map(file => file.path) 
-            : req.body.images ? JSON.parse(req.body.images) : [];
+            : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
         
         // Get thumbnail from files or fallback to req.body
         const thumbnail = req.files && req.files['thumbnail'] 
             ? req.files['thumbnail'][0].path 
-            : req.body.thumbnail || '';
+            : (req.body.thumbnail || '');
         
         // Get PDFs from files or fallback to req.body
         const pdfs = req.files && req.files['pdf'] 
             ? req.files['pdf'].map(file => ({ type: 'application/pdf', link: file.path })) 
-            : req.body.pdfs ? JSON.parse(req.body.pdfs) : [];
+            : (req.body.pdfs && typeof req.body.pdfs === 'string' ? JSON.parse(req.body.pdfs) : []);
 
         const newHoliday = new Holiday({
             ...req.body,
@@ -88,9 +88,17 @@ module.exports.update = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const images = req.files['images'] ? req.files['images'].map(file => file.path) : [];
-        const thumbnail = req.files['thumbnail'] ? req.files['thumbnail'][0].path : '';
-        const pdfs = req.files['pdf'] ? req.files['pdf'].map(file => ({ type: 'application/pdf', link: file.path })) : [];
+        const images = req.files && req.files['images'] 
+            ? req.files['images'].map(file => file.path) 
+            : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
+        
+        const thumbnail = req.files && req.files['thumbnail'] 
+            ? req.files['thumbnail'][0].path 
+            : (req.body.thumbnail || '');
+        
+        const pdfs = req.files && req.files['pdf'] 
+            ? req.files['pdf'].map(file => ({ type: 'application/pdf', link: file.path })) 
+            : (req.body.pdfs && typeof req.body.pdfs === 'string' ? JSON.parse(req.body.pdfs) : []);
 
         const updatedHoliday = await Holiday.findByIdAndUpdate(
             id,
