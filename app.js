@@ -22,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/hoildays', require("./routes/holidays/index"));
 app.use('/api/admin', require("./routes/admin/index"));
+app.use('/api/global-visa', require("./routes/global-visa/index"));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
