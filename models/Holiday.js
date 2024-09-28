@@ -67,7 +67,16 @@ const HolidaySchema = new Schema({
        /* {
         share: { type: String },
         fcb: { type: String },
-        from: { type: String }
+        from: { type: String },
+        to: { type: String },
+        duration: { type: String },
+        date: { type: String },
+        price: { type: String },
+        discount: { type: String },
+        discountPrice: { type: String },
+        discountPercentage: { type: String }
+        highlights: [{ type: String }],
+        tags: [{ type: String }],
     }*/
     faculty: [{ type: String }], // Assuming an array of strings or more complex subdocuments
     overview: { type: String },
