@@ -23,6 +23,7 @@ app.use('/', indexRouter);
 app.use('/api/holidays', require("./routes/holidays/index"));
 app.use('/api/admin', require("./routes/admin/index"));
 app.use('/api/global-visa', require("./routes/global-visa/index"));
+app.use('/api/umrahaall', require('./routes/Umraha for all/index'))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

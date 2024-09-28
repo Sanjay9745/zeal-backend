@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const app = require('../app');
 const debug = require('debug')('zeal-backend:server');
 const http = require('http');
+require('dotenv').config();
 
 /**
  * Get port from environment and store in Express.
@@ -26,7 +27,7 @@ const server = http.createServer(app);
  * Connect to MongoDB with Mongoose.
  */
 
-const mongoDBUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/zeal'; // replace with your MongoDB URI
+const mongoDBUri = process.env.MONGODB_URI ; // replace with your MongoDB URI
 mongoose.connect(mongoDBUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
