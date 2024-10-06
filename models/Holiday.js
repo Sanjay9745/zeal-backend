@@ -10,7 +10,7 @@ const PdfSchema = new Schema({
 // Schema for Itinerary details
 const ItineraryDetailsSchema = new Schema({
     title: { type: String },
-    icon: { type: String },
+    image: { type: String },
     category: { type: String },
     location: { type: String },
     room: { type: String },
@@ -23,8 +23,7 @@ const ItinerarySchema = new Schema({
     title: { type: String, required: true },
     description: { type: String },
     place: { type: String },
-    startDate: { type: Date },
-    endDate: { type: Date },
+    dayDetails: { type: String },
     details: [ItineraryDetailsSchema]
 }, { _id: false });
 
@@ -61,6 +60,7 @@ const HolidaySchema = new Schema({
     title: { type: String, required: true },
     description: { type: String },
     images: [{ type: String }],
+    slug: { type: String, required: true,unique:true },
     thumbnail: { type: String },
     pdf: [PdfSchema],
     details: Object,
@@ -75,10 +75,10 @@ const HolidaySchema = new Schema({
         discount: { type: String },
         discountPrice: { type: String },
         discountPercentage: { type: String }
-        highlights: [{ type: String }],
         tags: [{ type: String }],
     }*/
-    faculty: [{ type: String }], // Assuming an array of strings or more complex subdocuments
+    faculty: [{ type: String }],
+    highlights: [{ type: String }],
     overview: { type: String },
     itinerary: [ItinerarySchema],
     tourOverview: { type: String },
@@ -86,11 +86,15 @@ const HolidaySchema = new Schema({
     exclusion: [{ type: String }],
     timings: [{
         title: { type: String },
+        days: { type: String },
         time: { type: String }
     }],
     pricing: {
+        title: { type: String },
+        description: { type: String },
         packageCost: [PricingDetailSchema],
-        tax: [PricingDetailSchema]
+        tax: [PricingDetailSchema],
+        totalAmount: { type: String }
     },
     bookingPolicy: {
         cancellation: PolicySchema,
@@ -98,7 +102,8 @@ const HolidaySchema = new Schema({
         otherPolicies: [PolicySchema] // To handle any additional dynamic policies
     },
     faq: [FaqSchema],
-    rating: RatingSchema
+    rating: RatingSchema,
+    additionalInfo: { type: String },
 }, { timestamps: true }); // Add timestamps for createdAt and updatedAt fields
 
 // Export the model

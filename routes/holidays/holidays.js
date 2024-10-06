@@ -47,6 +47,21 @@ module.exports.getSingle = async (req, res) => {
         res.status(500).json({ success: false, error: error.message, message: "Error Getting Holiday" });
     }
 };
+// Get a single Holiday by Slug
+module.exports.getBySlug = async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const holiday = await Holiday.findOne({ slug });
+
+        if (!holiday) {
+            return res.status(404).json({ success: false, message: "Holiday not found" });
+        }
+
+        res.status(200).json({ success: true, results: holiday });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message, message: "Error Getting Holiday" });
+    }
+};
 
 // Add a new Holiday
 module.exports.add = async (req, res) => {
@@ -54,7 +69,7 @@ module.exports.add = async (req, res) => {
         // Get images from files or fallback to req.body
         const images = req.files && req.files['images'] 
             ? req.files['images'].map(file => file.path) 
-            : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
+            : (req.body.images && typeof req.body.images == "string" ? JSON.parse(req.body.images) : req.body.images);
         
         // Get thumbnail from files or fallback to req.body
         const thumbnail = req.files && req.files['thumbnail'] 
@@ -64,13 +79,26 @@ module.exports.add = async (req, res) => {
         // Get PDFs from files or fallback to req.body
         const pdfs = req.files && req.files['pdf'] 
             ? req.files['pdf'].map(file => ({ type: 'application/pdf', link: file.path })) 
-            : (req.body.pdfs && typeof req.body.pdfs === 'string' ? JSON.parse(req.body.pdfs) : []);
+            : (req.body.pdfs && typeof req.body.pdfs == "string" ? JSON.parse(req.body.pdfs) : req.body.pdfs);
 
+        //     const iternaryImages = req.files && req.files['iternary'] 
+        //     ? req.files['iternary'].map(file => file.path) 
+        //     : (req.body.images ? JSON.parse(req.body.images) : []);
+         let {itinerary} = req.body;
+        // if(itinerary){
+        //     itinerary = JSON.parse(itinerary);
+        //     itinerary.map((item,index)=>{
+        //         item.details.map((detail,ind)=>{
+        //             detail.images = iternaryImages.filter((img)=>img.originalname === detail.image);
+        //         })
+        //     })
+        // }
         const newHoliday = new Holiday({
             ...req.body,
             images: images,
             thumbnail: thumbnail,
-            pdf: pdfs
+            pdf: pdfs,
+            itinerary:itinerary
         });
 
         const savedHoliday = await newHoliday.save();
