@@ -4,7 +4,7 @@ const upload = require("../../middlewares/multerConfig");
 const controller = require('./holidays')
 
 router.get('/', controller.get);
-
+router.get('/slug/:slug', controller.getBySlug);
 router.get('/:id', controller.getSingle);
 
 router.post(
