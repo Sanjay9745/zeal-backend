@@ -47,14 +47,7 @@ const FaqSchema = new Schema({
     answer: { type: String, required: true }
 }, { _id: false });
 
-// Schema for Ratings
-const RatingSchema = new Schema({
-    reviews: [{ type: String }], // Array of review strings or a more complex object
-    stars: { type: Number, min: 0, max: 5, default: 4.0 },
-    ratingCount: { type: Number, default: 0 },
-    review: { type: String },
-    details: [{}]
-}, { _id: false });
+
 
 // Main schema
 const UmrahaSchema = new Schema({
@@ -89,7 +82,7 @@ const UmrahaSchema = new Schema({
         otherPolicies: [PolicySchema] // To handle any additional dynamic policies
     },
     faq: [FaqSchema],
-    rating: RatingSchema
+
 }, { timestamps: true }); // Add timestamps for createdAt and updatedAt fields
 
 // Export the model
