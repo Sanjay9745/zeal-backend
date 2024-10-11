@@ -48,7 +48,7 @@ module.exports.getSingle = async (req, res) => {
     }
 };
 
-// Add a new Holiday
+// Add a Umrha
 module.exports.add = async (req, res) => {
     try {
         // Get images from files or fallback to req.body
