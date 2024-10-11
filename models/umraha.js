@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// Schema for PDF links
-const PdfSchema = new Schema({
-    type: { type: String, required: true },
-    link: { type: String, required: true }
-});
 
 // Schema for Itinerary details
 const ItineraryDetailsSchema = new Schema({
@@ -62,13 +57,10 @@ const UmrahaSchema = new Schema({
     description: { type: String },
     images: [{ type: String }],
     thumbnail: { type: String },
-    pdf: [PdfSchema],
+
     details: Object,
-       /* {
-        share: { type: String },
-        fcb: { type: String },
-        from: { type: String }
-    }*/
+
+    
     faculty: [{ type: String }], // Assuming an array of strings or more complex subdocuments
     overview: { type: String },
     itinerary: [ItinerarySchema],
@@ -84,8 +76,8 @@ const UmrahaSchema = new Schema({
         tax: [PricingDetailSchema]
     },
     bookingPolicy: {
-        cancellation: PolicySchema,
-        childPolicy: PolicySchema,
+        cancellation: [PolicySchema],
+        childPolicy: [PolicySchema],
         otherPolicies: [PolicySchema] // To handle any additional dynamic policies
     },
     faq: [FaqSchema],
