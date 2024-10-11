@@ -1,21 +1,38 @@
 const multer = require('multer');
 const path = require('path');
+const crypto = require('crypto');
+const fs = require('fs');
+
+// Function to ensure directory exists
+const ensureDirectoryExistence = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
 
 // Set up Multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    let uploadPath = '';
     if (file.fieldname === 'images') {
-      cb(null, 'uploads/images/');
+      uploadPath = 'uploads/images/';
     } else if (file.fieldname === 'thumbnail') {
-      cb(null, 'uploads/thumbnails/');
+      uploadPath = 'uploads/thumbnails/';
     } else if (file.fieldname === 'pdf') {
-      cb(null, 'uploads/pdfs/');
-    }else if (file.fieldname === 'iternary') {
-      cb(null, 'uploads/images/');
+      uploadPath = 'uploads/pdfs/';
+    } else if (file.fieldname === 'itineraryImages') {
+      uploadPath = 'uploads/images/';
     }
+
+    // Ensure the directory exists
+    ensureDirectoryExistence(uploadPath);
+
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+    // Generate a unique filename using timestamp and random string
+    const uniqueName = `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${path.extname(file.originalname).toLowerCase()}`;
+    cb(null, uniqueName);
   },
 });
 
@@ -32,10 +49,10 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Initialize Multer with a size limit of 20MB
+// Initialize Multer with a size limit of 50MB
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB size limit
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB size limit
   fileFilter: fileFilter,
 });
 

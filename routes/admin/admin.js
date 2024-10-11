@@ -51,7 +51,7 @@ module.exports.login = async (req, res) => {
         }
 
         // Create and send JWT
-        const token = jwt.sign({ id: admin._id, isAdmin: admin.isAdmin }, jwtSecret, { expiresIn: '1h' });
+        const token = jwt.sign({ id: admin._id, isAdmin: admin.isAdmin }, jwtSecret);
         res.status(200).json({ success: true, token, message: 'Login successful' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });

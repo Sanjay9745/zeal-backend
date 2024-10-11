@@ -1,6 +1,6 @@
 # Node modules directory
 node_modules/
-
+uploads/
 # Logs
 *.log
 logs/

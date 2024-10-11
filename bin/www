@@ -28,10 +28,7 @@ const server = http.createServer(app);
  */
 
 const mongoDBUri = process.env.MONGODB_URI ; // replace with your MongoDB URI
-mongoose.connect(mongoDBUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(mongoDBUri);
 
 // Mongoose connection events
 mongoose.connection.on('connected', () => {

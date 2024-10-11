@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 // Schema for PDF links
 const PdfSchema = new Schema({
-    type: { type: String, required: true },
-    link: { type: String, required: true }
+    type: { type: String },
+    link: { type: String }
 });
 
 // Schema for Itinerary details
@@ -30,8 +30,8 @@ const ItinerarySchema = new Schema({
 // Schema for Pricing details
 const PricingDetailSchema = new Schema({
     title: { type: String },
-    amount: { type: Number, required: true },
-    currency: { type: String, required: true }
+    amount: { type: String },
+    currency: { type: String }
 }, { _id: false });
 
 // Schema for Booking Policy
@@ -42,8 +42,8 @@ const PolicySchema = new Schema({
 
 // Schema for FAQ
 const FaqSchema = new Schema({
-    question: { type: String, required: true },
-    answer: { type: String, required: true }
+    question: { type: String },
+    answer: { type: String }
 }, { _id: false });
 
 // Schema for Ratings
@@ -60,23 +60,23 @@ const HolidaySchema = new Schema({
     title: { type: String, required: true },
     description: { type: String },
     images: [{ type: String }],
-    slug: { type: String, required: true,unique:true },
+    slug: { type: String, required: true, unique: true },
     thumbnail: { type: String },
     pdf: [PdfSchema],
     details: Object,
-       /* {
-        share: { type: String },
-        fcb: { type: String },
-        from: { type: String },
-        to: { type: String },
-        duration: { type: String },
-        date: { type: String },
-        price: { type: String },
-        discount: { type: String },
-        discountPrice: { type: String },
-        discountPercentage: { type: String }
-        tags: [{ type: String }],
-    }*/
+    /* {
+     share: { type: String },
+     fcb: { type: String },
+     from: { type: String },
+     to: { type: String },
+     duration: { type: String },
+     date: { type: String },
+     price: { type: String },
+     discount: { type: String },
+     discountPrice: { type: String },
+     discountPercentage: { type: String }
+     tags: [{ type: String }],
+ }*/
     faculty: [{ type: String }],
     highlights: [{ type: String }],
     overview: { type: String },
@@ -92,14 +92,14 @@ const HolidaySchema = new Schema({
     pricing: {
         title: { type: String },
         description: { type: String },
-        packageCost: [PricingDetailSchema],
-        tax: [PricingDetailSchema],
+        packageCost: [],
+        tax: [],
         totalAmount: { type: String }
     },
     bookingPolicy: {
-        cancellation: PolicySchema,
-        childPolicy: PolicySchema,
-        otherPolicies: [PolicySchema] // To handle any additional dynamic policies
+        cancellation: {},
+        childPolicy: {},
+        otherPolicies: [] // To handle any additional dynamic policies
     },
     faq: [FaqSchema],
     rating: RatingSchema,
