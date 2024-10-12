@@ -49,8 +49,8 @@ const FaqSchema = new Schema({
 // Schema for Ratings
 const RatingSchema = new Schema({
     reviews: [{ type: String }], // Array of review strings or a more complex object
-    stars: { type: Number, min: 0, max: 5, default: 4.0 },
-    ratingCount: { type: Number, default: 0 },
+    stars: { type: String, default:"4.0"},
+    ratingCount: { type: String, default: "0" },
     review: { type: String },
     details: [{}]
 }, { _id: false });
