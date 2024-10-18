@@ -69,29 +69,15 @@ module.exports.add = async (req, res) => {
 // Update an existing Holiday by ID
 module.exports.update = async (req, res) => {
     try {
-      console.log("hello");
   
       const { id } = req.params;
-      console.log("ID to update:", id);
-      console.log("Request body:", req.body);
-  
-      // Ensure the ID is not empty and body has content
-      if (!id || Object.keys(req.body).length === 0) {
-        return res.status(400).json({ success: false, message: "Invalid data provided" });
-      }
-  
+      const { updatePackage } = req.body;
       const updatedUmraha = await UmrahaData.findByIdAndUpdate(
         id,
-        { ...req.body }, // Spread operator to update all fields in req.body
-        { new: true, runValidators: true } // Return updated object and run schema validators
+        { ...updatePackage }, // Spread the updatePackage fields
+        { new: true, runValidators: true }
       );
-  
-      console.log("Updated Umraha:", updatedUmraha);
-  
-      if (!updatedUmraha) {
-        return res.status(404).json({ success: false, message: "Holiday not found" });
-      }
-  
+      
       res.status(200).json({ success: true, results: updatedUmraha });
       console.log("Update successful");
   
