@@ -70,6 +70,8 @@ module.exports.add = async (req, res) => {
         const images = req.files && req.files['images']
             ? req.files['images'].map(file => file.path)
             : [];
+
+            
         const thumbnail = req.files && req.files['thumbnail']
             ? req.files['thumbnail'][0].path
             : '';
@@ -167,8 +169,7 @@ module.exports.update = async (req, res) => {
 
         // Extract files (if any) from req.files
         const images = req.files && req.files['images']
-            ? req.files['images'].map(file => file.path)
-            : holiday.images;
+            ? req.files['images'].map(file => file.path) : holiday.images;
 
         const thumbnail = req.files && req.files['thumbnail']
             ? req.files['thumbnail'][0].path

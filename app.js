@@ -9,14 +9,7 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 
-
-app.use(cors({
-  origin: "http://localhost:5173", // Frontend origin
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
-
+app.use(cors())
 
 
 // view engine setup

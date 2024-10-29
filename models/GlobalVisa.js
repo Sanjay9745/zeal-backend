@@ -14,13 +14,13 @@ const FaqSchema = new Schema({
     answer: { type: String, required: true }
 }, { _id: false });
 
-// Schema for PricingWithCurrency
-const PricingWithCurrencySchema = new Schema({
-    currency: { type: String, required: true },
-    price: { type: Number, required: true },
-    discountPrice: { type: Number },
-    discountPercentage: { type: Number },
-}, { _id: false });
+    // Schema for PricingWithCurrency
+    const PricingWithCurrencySchema = new Schema({
+        currency: { type: String, required: true },
+        price: { type: Number, required: false },
+        discountPrice: { type: Number },
+        discountPercentage: { type: Number },
+    }, { _id: false });
 
 // Main schema
 const GlobalVisaSchema = new Schema({
@@ -38,7 +38,7 @@ const GlobalVisaSchema = new Schema({
         discount: { type: String },
         refundStatus: { type: String },
         processType: [{ type: String, enum: ["Low", "Medium", "High"] }],  // Enum for processType
-        visaNo: [{ type: Number }],
+        visaNo: [{ type:Number }],
         price: { type: Number },
         currency: { type: String },
         discountPercentage:{type: String},
