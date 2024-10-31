@@ -29,7 +29,7 @@ const GlobalVisaSchema = new Schema({
     images: [{ type: String }],
     thumbnail: { type: String },
     details: { type: Schema.Types.Mixed },  // For flexibility, if `details` is a complex object
-    faculty: [{ type: String }],
+    // faculty: [{ type: String }],
     howToApply: { type: String },
     overview: { type: String },
     options: [{

@@ -15,19 +15,19 @@ const ItineraryDetailsSchema = new Schema({
 
 // Schema for Itinerary
 const ItinerarySchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String},
     description: { type: String },
     place: { type: String },
     startDate: { type: Date },
     endDate: { type: Date },
-    details: [ItineraryDetailsSchema]
+    details: [ItineraryDetailsSchema] 
 }, { _id: false });
 
 // Schema for Pricing details
 const PricingDetailSchema = new Schema({
     title: { type: String },
-    amount: { type: Number, required: true },
-    currency: { type: String, required: true }
+    amount: { type: Number},
+    currency: { type: String }
 }, { _id: false });
 
 // Schema for Booking Policy
@@ -38,8 +38,8 @@ const PolicySchema = new Schema({
 
 // Schema for FAQ
 const FaqSchema = new Schema({
-    question: { type: String, required: true },
-    answer: { type: String, required: true }
+    question: { type: String},
+    answer: { type: String }
 }, { _id: false });
 
 // Schema for Ratings
@@ -53,7 +53,7 @@ const RatingSchema = new Schema({
 
 // Main schema
 const UmrahaSchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String },
     description: { type: String },
     images: [{ type: String }],
     thumbnail: { type: String },

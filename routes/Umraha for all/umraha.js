@@ -49,17 +49,35 @@ module.exports.getSingle = async (req, res) => {
 };
 
 // Add a Umrha
+
+const BASE_URL = 'http://localhost:3002/uploads';
+
 module.exports.add = async (req, res) => {
-    // console.log("Request :", req.body);
+    console.log("Requestimage :", req.body );
 
     try {
-        const newUmraha = new UmrahaData({
-            ...req.body
-        });
 
-        const savedUmraha = await newUmraha.save();
+        const images = req.files && req.files['images']
+            ? req.files['images'].map(file => `${BASE_URL}/images/${file.filename.replace(/\\/g, '/')}`) // Use forward slashes
+            : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
 
-        res.status(200).json({ success: true, results: savedUmraha });
+        console.log(req.files, "farhan");
+
+
+        const thumbnail = req.files && req.files['thumbnail']
+            ? `${BASE_URL}/thumbnails/${req.files['thumbnail'][0].filename.replace(/\\/g, '/')}` // Use forward slashes
+            : (req.body.thumbnail || '');
+
+
+        // const newUmraha = new UmrahaData({
+        //     ...req.body,
+        //     images: images,
+        //     thumbnail: thumbnail,
+        // });
+
+        // const savedUmraha = await newUmraha.save();
+
+        // res.status(200).json({ success: true, results: savedUmraha });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, error: error.message, message: "Error adding holiday" });
@@ -69,24 +87,26 @@ module.exports.add = async (req, res) => {
 // Update an existing Holiday by ID
 module.exports.update = async (req, res) => {
     try {
-  
-      const { id } = req.params;
-      const { updatePackage } = req.body;
-      const updatedUmraha = await UmrahaData.findByIdAndUpdate(
-        id,
-        { ...updatePackage }, // Spread the updatePackage fields
-        { new: true, runValidators: true }
-      );
-      
-      res.status(200).json({ success: true, results: updatedUmraha });
-      console.log("Update successful");
-  
+
+        const { id } = req.params;
+        const updatePackage = req.body;
+        console.log(updatePackage);
+
+        const updatedUmraha = await UmrahaData.findByIdAndUpdate(
+            id,
+            { ...updatePackage }, // Spread the updatePackage fields
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({ success: true, results: updatedUmraha });
+        console.log("Update successful");
+
     } catch (error) {
-      console.error("Error during update:", error);
-      res.status(500).json({ success: false, message: "Error updating Holiday", error: error.message });
+        console.error("Error during update:", error);
+        res.status(500).json({ success: false, message: "Error updating Holiday", error: error.message });
     }
-  };
-  
+};
+
 
 // Delete a Holiday by ID
 module.exports.delete = async (req, res) => {

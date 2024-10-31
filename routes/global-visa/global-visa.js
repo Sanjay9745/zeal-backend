@@ -39,6 +39,8 @@ module.exports.getSingle = async (req, res) => {
 
 module.exports.add = async (req, res) => {
     try {
+        console.log(req.body);
+        
         const images = req.files && req.files['images'] 
             ? req.files['images'].map(file => file.path) 
             : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
