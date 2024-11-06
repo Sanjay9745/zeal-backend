@@ -48,7 +48,6 @@ const RatingSchema = new Schema({
     stars: { type: Number, min: 0, max: 5, default: 4.0 },
     ratingCount: { type: Number, default: 0 },
     review: { type: String },
-    details: [{}]
 }, { _id: false });
 
 // Main schema
@@ -60,17 +59,19 @@ const UmrahaSchema = new Schema({
 
     details: Object,
 
+    slug: {type: String},
     
-    faculty: [{ type: String }], // Assuming an array of strings or more complex subdocuments
     overview: { type: String },
-    itinerary: [ItinerarySchema],
     tourOverview: { type: String },
-    inclusion: [{ type: String }],
-    exclusion: [{ type: String }],
+    faculty: { type: String }, // Assuming an array of strings or more complex subdocuments
+    inclusion: { type: String },
+    exclusion: { type: String },
+    itinerary: [ItinerarySchema],
     timings: [{
         title: { type: String },
         time: { type: String }
     }],
+
     pricing: {
         packageCost: [PricingDetailSchema],
         tax: [PricingDetailSchema]
@@ -81,7 +82,7 @@ const UmrahaSchema = new Schema({
         otherPolicies: [PolicySchema] // To handle any additional dynamic policies
     },
     faq: [FaqSchema],
-    rating: RatingSchema
+    // rating: RatingSchema
 }, { timestamps: true }); // Add timestamps for createdAt and updatedAt fields
 
 // Export the model

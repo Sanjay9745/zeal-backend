@@ -53,6 +53,8 @@ module.exports.getSingle = async (req, res) => {
 const BASE_URL = 'http://localhost:3002/uploads';
 
 module.exports.add = async (req, res) => {
+    console.log("fay");
+    
     console.log("Requestimage :", req.body );
 
     try {
@@ -69,15 +71,15 @@ module.exports.add = async (req, res) => {
             : (req.body.thumbnail || '');
 
 
-        // const newUmraha = new UmrahaData({
-        //     ...req.body,
-        //     images: images,
-        //     thumbnail: thumbnail,
-        // });
+        const newUmraha = new UmrahaData({
+            ...req.body,
+            images: images,
+            thumbnail: thumbnail,
+        });
 
-        // const savedUmraha = await newUmraha.save();
+        const savedUmraha = await newUmraha.save();
 
-        // res.status(200).json({ success: true, results: savedUmraha });
+        res.status(200).json({ success: true, results: savedUmraha });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, error: error.message, message: "Error adding holiday" });
