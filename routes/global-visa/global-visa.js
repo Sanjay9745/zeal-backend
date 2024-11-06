@@ -29,7 +29,7 @@ module.exports.getSingle = async (req, res) => {
         const { id } = req.params;
         const globalVisa = await GlobalVisa.findById(id);
 
-        if (!globalVisa) {
+        if (!globalVisa) {    
             return res.status(404).json({ success: false, message: 'GlobalVisa not found' });
         }
 
@@ -39,11 +39,27 @@ module.exports.getSingle = async (req, res) => {
     }
 };    
 
+// Get a single Holiday by Slug
+module.exports.getBySlug = async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const globalVisa = await GlobalVisa.findOne({ slug });
+
+        if (!globalVisa) {
+            return res.status(404).json({ success: false, message: "Global Visa not found" });
+        }
+
+        res.status(200).json({ success: true, results: globalVisa });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message, message: "Error Getting GlobalVisa" });
+    }
+};
+
 const BASE_URL = 'http://localhost:3002/uploads'; // Change this to your server's URL
 
     
 module.exports.add = async (req, res) => {
-    try {
+    try {                                               
         
         const images = req.files && req.files['images']   
             ? req.files['images'].map(file => `${BASE_URL}/images/${file.filename.replace(/\\/g, '/')}`) // Use forward slashes
@@ -60,12 +76,15 @@ module.exports.add = async (req, res) => {
 
 
         const newGlobalVisa = new GlobalVisa({
-            ...req.body,
+            ...req.body,                            
             images: images,
             thumbnail: thumbnail,
           
             
         });
+        
+                
+     
 
         const savedGlobalVisa = await newGlobalVisa.save();
 
@@ -83,34 +102,56 @@ module.exports.update = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const images = req.files && req.files['images']   
-            ? req.files['images'].map(file => `${BASE_URL}/images/${file.filename.replace(/\\/g, '/')}`) // Use forward slashes
-            : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
-        
-        console.log(req.files, "farhan");
-                
-     
-                                       
-        const thumbnail = req.files && req.files['thumbnail'] 
-            ? `${BASE_URL}/thumbnails/${req.files['thumbnail'][0].filename.replace(/\\/g, '/')}` // Use forward slashes
-            : (req.body.thumbnail || '');
-            
-        const updatedGlobalVisa = await GlobalVisa.findByIdAndUpdate(id, {
-            ...req.body,
-            images: images.length ? images : undefined, // Only update if new images are provided
-            thumbnail: thumbnail || undefined, // Only update if a new thumbnail is provided
-        }, { new: true, runValidators: true });
+        // Helper function to safely parse JSON if it's a valid JSON string
+        const safeParse = (data) => {
+            try {
+                return typeof data === 'string' ? JSON.parse(data) : data;
+            } catch (error) {
+                return data;  // Return original data if parsing fails
+            }
+        };
 
-        console.log(updatedGlobalVisa,"updatedGlobalVisa");
-        
+        // Parse JSON strings to arrays/objects as needed
+        let faq = safeParse(req.body.faq);
+        let options = safeParse(req.body.options);
+        let faculty = safeParse(req.body.faculty);
+        let pricing = safeParse(req.body.pricing);
+
+        // Handle images and thumbnail
+        const images = req.files && req.files['images']
+            ? req.files['images'].map(file => `${BASE_URL}/images/${file.filename.replace(/\\/g, '/')}`)
+            : safeParse(req.body.images) || [];
+
+        const thumbnail = req.files && req.files['thumbnail']
+            ? `${BASE_URL}/thumbnails/${req.files['thumbnail'][0].filename.replace(/\\/g, '/')}`
+            : req.body.thumbnail || '';
+
+        // Update the GlobalVisa document
+        const updatedGlobalVisa = await GlobalVisa.findByIdAndUpdate(
+            id,
+            {
+                ...req.body,
+                images: images.length ? images : undefined,
+                thumbnail: thumbnail || undefined,
+                faq,
+                options,
+                faculty,
+                pricing
+            },
+            { new: true, runValidators: true }
+        );
 
         if (!updatedGlobalVisa) {
             return res.status(404).json({ success: false, message: 'GlobalVisa not found' });
         }
-
         res.status(200).json({ success: true, results: updatedGlobalVisa });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message, message: "Error updating GlobalVisa" });
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            message: "Error updating GlobalVisa",
+        });
     }
 };
 

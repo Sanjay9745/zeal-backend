@@ -4,8 +4,8 @@ const { Schema } = mongoose;
 // Schema for Pricing details
 const PricingDetailSchema = new Schema({
     title: { type: String },
-    amount: { type: Number, required: true },
-    currency: { type: String, required: true }
+    amount: { type: Number},
+    currency: { type: String}
 }, { _id: false });
 
 // Schema for FAQ
@@ -16,15 +16,16 @@ const FaqSchema = new Schema({
 
     // Schema for PricingWithCurrency
     const PricingWithCurrencySchema = new Schema({
-        currency: { type: String, required: true },
-        price: { type: Number, required: false },
+        currency: { type: String },
+        price: { type: Number },
         discountPrice: { type: Number },
-        discountPercentage: { type: Number },
+        discountPercentage: { type: String },
     }, { _id: false });
 
 // Main schema
 const GlobalVisaSchema = new Schema({
     title: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
     description: { type: String },
     images: [{ type: String }],
     thumbnail: { type: String },

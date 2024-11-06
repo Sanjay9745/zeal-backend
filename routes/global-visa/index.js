@@ -5,6 +5,7 @@ const controller = require('./global-visa')
 
 router.get('/', controller.get);
 router.get('/:id', controller.getSingle);
+router.get('/slug/:slug', controller.getBySlug);
 router.post(
     '/',
     AdminAuth,

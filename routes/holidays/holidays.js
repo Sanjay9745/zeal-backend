@@ -63,29 +63,38 @@ module.exports.getBySlug = async (req, res) => {
     }
 };
 
+const BASE_URL = 'http://localhost:3002/uploads'; // Change this to your server's URL
+
 // Add a new Holiday
 module.exports.add = async (req, res) => {
     try {
         // Extract images from files (if they exist) or fallback to req.body
-        const images = req.files && req.files['images']
-            ? req.files['images'].map(file => file.path)
-            : [];
+        const images = req.files && req.files['images']   
+        ? req.files['images'].map(file => `${BASE_URL}/images/${file.filename.replace(/\\/g, '/')}`) // Use forward slashes
+        : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
+    
 
             
-        const thumbnail = req.files && req.files['thumbnail']
-            ? req.files['thumbnail'][0].path
-            : '';
+ 
+                                   
+    const thumbnail = req.files && req.files['thumbnail'] 
+        ? `${BASE_URL}/thumbnails/${req.files['thumbnail'][0].filename.replace(/\\/g, '/')}` // Use forward slashes
+        : (req.body.thumbnail || '');
+
 
         const pdfs = req.files && req.files['pdf']
             ? req.files['pdf'].map(file => ({ type: 'application/pdf', link: file.path }))
             : [];
-        // Extract itinerary images
-        const itineraryImages = (req.files && req.files['itineraryImages'])
-            ? req.files['itineraryImages'].map(file => ({
-                originalname: file.originalname, // Keep the original filename
-                path: file.path
-            }))
-            : [];
+             
+      // Extract itinerary images and add BASE_URL to each path
+        const itineraryImages = req.files && req.files['itineraryImages']
+        ? req.files['itineraryImages'].map(file => ({ 
+        originalname: file.originalname,  
+        path: `${BASE_URL}/itineraryImages/${file.filename.replace(/\\/g, '/')}` 
+       }))
+     : [];
+
+
         // Parse itinerary data from req.body (if exists)
         let {
             title,
@@ -167,24 +176,30 @@ module.exports.update = async (req, res) => {
             return res.status(404).json({ success: false, message: "Holiday not found" });
         }
 
-        // Extract files (if any) from req.files
-        const images = req.files && req.files['images']
-            ? req.files['images'].map(file => file.path) : holiday.images;
+        const images = req.files && req.files['images']   
+        ? req.files['images'].map(file => `${BASE_URL}/images/${file.filename.replace(/\\/g, '/')}`) // Use forward slashes
+        : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
+    
+    console.log(req.files, "farhan");
+            
+ 
+                                   
+    const thumbnail = req.files && req.files['thumbnail'] 
+        ? `${BASE_URL}/thumbnails/${req.files['thumbnail'][0].filename.replace(/\\/g, '/')}` // Use forward slashes
+        : (req.body.thumbnail || '');
 
-        const thumbnail = req.files && req.files['thumbnail']
-            ? req.files['thumbnail'][0].path
-            : holiday.thumbnail;
 
         const pdfs = req.files && req.files['pdf']
             ? req.files['pdf'].map(file => ({ type: 'application/pdf', link: file.path }))
             : holiday.pdf;
 
-        const itineraryImages = req.files && req.files['itineraryImages']
-            ? req.files['itineraryImages'].map(file => ({
-                originalname: file.originalname,
-                path: file.path
-            }))
-            : [];
+       // Extract itinerary images and add BASE_URL to each path
+       const itineraryImages = req.files && req.files['itineraryImages']
+        ? req.files['itineraryImages'].map(file => ({ 
+       originalname: file.originalname,  
+       path: `${BASE_URL}/itineraryImages/${file.filename.replace(/\\/g, '/')}` 
+       }))
+     : [];
 
         // Parse JSON fields if they exist
         const {
