@@ -10,6 +10,8 @@ const storage = multer.diskStorage({
       cb(null, 'uploads/thumbnails/');
     } else if (file.fieldname === 'pdf') {
       cb(null, 'uploads/pdfs/');
+    } else if (file.fieldname === 'detailsImage') {
+      cb(null, 'uploads/detailsImage/');
     }
   },
   filename: (req, file, cb) => {

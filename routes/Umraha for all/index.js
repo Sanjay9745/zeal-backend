@@ -13,7 +13,8 @@ router.post(
     upload.fields([
         { name: 'images', maxCount: 10 },
         { name: 'thumbnail', maxCount: 1 },
-        { name: 'pdf', maxCount: 5 }
+        { name: 'pdf', maxCount: 5 },
+        { name: 'detailsImage', maxCount: 10 }
     ]),
     controller.add
 );

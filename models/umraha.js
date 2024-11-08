@@ -66,7 +66,7 @@ const UmrahaSchema = new Schema({
     faculty: { type: String }, // Assuming an array of strings or more complex subdocuments
     inclusion: { type: String },
     exclusion: { type: String },
-    itinerary: [ItinerarySchema],
+    itinerary: ItinerarySchema,
     timings: [{
         title: { type: String },
         time: { type: String }
@@ -77,8 +77,8 @@ const UmrahaSchema = new Schema({
         tax: [PricingDetailSchema]
     },
     bookingPolicy: {
-        cancellation: [PolicySchema],
-        childPolicy: [PolicySchema],
+        cancellation: { type: String },
+        childPolicy: { type: String },
         otherPolicies: [PolicySchema] // To handle any additional dynamic policies
     },
     faq: [FaqSchema],

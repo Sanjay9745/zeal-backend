@@ -65,16 +65,30 @@ module.exports.add = async (req, res) => {
 
         console.log(req.files, "farhan");
 
-
         const thumbnail = req.files && req.files['thumbnail']
             ? `${BASE_URL}/thumbnails/${req.files['thumbnail'][0].filename.replace(/\\/g, '/')}` // Use forward slashes
             : (req.body.thumbnail || '');
+
+            
+        const detailsImage = req.files && req.files['detailsImage']
+        ? `${BASE_URL}/detailsImage/${req.files['detailsImage'][0].filename.replace(/\\/g, '/')}` // Use forward slashes
+        : (req.body.detailsImage || '');
+
+        const itinerary = JSON.parse(req.body.itinerary)
+        itinerary.details = itinerary.details.map((detail) => ({
+            ...detail,
+            detailsImage: detailsImage || '', 
+          }));        
 
 
         const newUmraha = new UmrahaData({
             ...req.body,
             images: images,
             thumbnail: thumbnail,
+            bookingPolicy: JSON.parse(req.body.bookingPolicy),
+            faq: JSON.parse(req.body.faq),
+            pricing: JSON.parse(req.body.pricing),
+            itinerary: itinerary,
         });
 
         const savedUmraha = await newUmraha.save();
