@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// Schema for PDF links
-const PdfSchema = new Schema({
-    type: { type: String, required: true },
-    link: { type: String, required: true }
-});
 
 // Schema for Itinerary details
 const ItineraryDetailsSchema = new Schema({
@@ -20,19 +15,19 @@ const ItineraryDetailsSchema = new Schema({
 
 // Schema for Itinerary
 const ItinerarySchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String},
     description: { type: String },
     place: { type: String },
     startDate: { type: Date },
     endDate: { type: Date },
-    details: [ItineraryDetailsSchema]
+    details: [ItineraryDetailsSchema] 
 }, { _id: false });
 
 // Schema for Pricing details
 const PricingDetailSchema = new Schema({
     title: { type: String },
-    amount: { type: Number, required: true },
-    currency: { type: String, required: true }
+    amount: { type: Number},
+    currency: { type: String }
 }, { _id: false });
 
 // Schema for Booking Policy
@@ -43,46 +38,51 @@ const PolicySchema = new Schema({
 
 // Schema for FAQ
 const FaqSchema = new Schema({
-    question: { type: String, required: true },
-    answer: { type: String, required: true }
+    question: { type: String},
+    answer: { type: String }
 }, { _id: false });
 
-
+// Schema for Ratings
+const RatingSchema = new Schema({
+    reviews: [{ type: String }], // Array of review strings or a more complex object
+    stars: { type: Number, min: 0, max: 5, default: 4.0 },
+    ratingCount: { type: Number, default: 0 },
+    review: { type: String },
+}, { _id: false });
 
 // Main schema
 const UmrahaSchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String },
     description: { type: String },
     images: [{ type: String }],
     thumbnail: { type: String },
-    pdf: [PdfSchema],
+
     details: Object,
-       /* {
-        share: { type: String },
-        fcb: { type: String },
-        from: { type: String }
-    }*/
-    faculty: [{ type: String }], // Assuming an array of strings or more complex subdocuments
+
+    slug: {type: String},
+    
     overview: { type: String },
-    itinerary: [ItinerarySchema],
     tourOverview: { type: String },
-    inclusion: [{ type: String }],
-    exclusion: [{ type: String }],
+    faculty: { type: String }, // Assuming an array of strings or more complex subdocuments
+    inclusion: { type: String },
+    exclusion: { type: String },
+    itinerary: [ItinerarySchema],
     timings: [{
         title: { type: String },
         time: { type: String }
     }],
+
     pricing: {
         packageCost: [PricingDetailSchema],
         tax: [PricingDetailSchema]
     },
     bookingPolicy: {
-        cancellation: PolicySchema,
-        childPolicy: PolicySchema,
+        cancellation: [PolicySchema],
+        childPolicy: [PolicySchema],
         otherPolicies: [PolicySchema] // To handle any additional dynamic policies
     },
     faq: [FaqSchema],
-
+    // rating: RatingSchema
 }, { timestamps: true }); // Add timestamps for createdAt and updatedAt fields
 
 // Export the model

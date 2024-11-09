@@ -2,7 +2,7 @@ require("dotenv").config()
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
+var cookieParser = require('cookie-parser');   
 var logger = require('morgan');
 const cors = require('cors');
 var indexRouter = require('./routes/index');
@@ -25,6 +25,7 @@ app.use('/api/holidays', require("./routes/holidays/index"));
 app.use('/api/admin', require("./routes/admin/index"));
 app.use('/api/global-visa', require("./routes/global-visa/index"));
 app.use('/api/umrahaall', require('./routes/Umraha for all/index'))
+app.use('/api/banners', require('./routes/User/index'))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
