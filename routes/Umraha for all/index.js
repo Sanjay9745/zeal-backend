@@ -1,11 +1,14 @@
 const router = require("express").Router();
 const AdminAuth = require("../../middlewares/AdminAuth");
 const upload = require("../../middlewares/multerConfig");
-const controller = require('./umraha')
+const controller = require('./umraha');
 
 router.get('/', controller.get);
 
 router.get('/:id', controller.getSingle);
+
+// Route to get data by slug
+router.get('/slug/:slug', controller.getBySlug);
 
 router.post(
     '/',
@@ -31,6 +34,5 @@ router.put(
 );
 
 router.delete('/:id', AdminAuth, controller.delete);
-
 
 module.exports = router;

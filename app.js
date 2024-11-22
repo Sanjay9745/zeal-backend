@@ -29,6 +29,20 @@ app.use('/api/admin', require("./routes/admin/index"));
 app.use('/api/global-visa', require("./routes/global-visa/index"));
 app.use('/api/umrahaall', require('./routes/Umraha for all/index'))
 
+// Middleware to parse JSON bodies
+// app.use(bodyParser.json());
+
+// Endpoint to handle enquiry submission
+app.post('/api/enquiry', (req, res) => {
+  const enquiryData = req.body;
+  console.log('Received Enquiry Data:', enquiryData);
+
+  // Here you can handle the data (save to database, send email, etc.)
+
+  // Respond back to the client
+  res.json({ message: 'Enquiry received successfully!' });
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

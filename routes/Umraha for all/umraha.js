@@ -32,19 +32,37 @@ module.exports.get = async (req, res) => {
     }
 };
 
+
+// Fetch data by slug
+module.exports.getBySlug = async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const data = await UmrahaData.findOne({ slug });
+
+        if (!data) {
+            return res.status(404).json({ success: false, message: "Umrah data not found" });
+        }
+
+        res.status(200).json({ success: true, results: data });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message, message: "Error fetching Umrah data" });
+    }
+};
+
 // Get a single Holiday by ID
 module.exports.getSingle = async (req, res) => {
     try {
         const { id } = req.params;
         const UmrahaforAll = await UmrahaData.findById(id);
+console.log(UmrahaforAll);
 
         if (!UmrahaforAll) {
-            return res.status(404).json({ success: false, message: "Holiday not found" });
+            return res.status(404).json({ success: false, message: "Umraha Data not found" });
         }
 
         res.status(200).json({ success: true, results: UmrahaforAll });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message, message: "Error Getting Holiday" });
+        res.status(500).json({ success: false, error: error.message, message: "Error Getting Umraha" });
     }
 };
 
