@@ -21,19 +21,23 @@ const storage = multer.diskStorage({
   const addBanner = async (req,res)=>{
     try {
        
-        const imagePath = req.file ? `/banners/${req.file.filename}` : '';
-        console.log(imagePath,"imagePath");
-        
-        const imageUrl = `${BASE_URL}${imagePath}`;
+      // Log req.files to check if files are being received
+    console.log(req.files, "req.files");
+
+          // Create an array of image URLs from uploaded files
+       const imageUrls = req.files.map((file) => `${BASE_URL}/banners/${file.filename}`);
+       console.log(imageUrls, "imageUrls");
 
 
         // Check if image was uploaded
-        if (!imageUrl) {
+        if (!imageUrls) {
           return res.status(400).json({ message: 'Banner image is required' });
         }
     
-        // Create and save the new banner
-        const newBanner = new Banner({ imageUrl });
+        // Create and save the new banner 
+        const newBanner = new Banner({ imageUrls });
+        console.log(newBanner,"newBanner");
+        
         await newBanner.save();
     
         res.status(201).json({ message: 'Banner added successfully', banner: newBanner });
@@ -42,8 +46,20 @@ const storage = multer.diskStorage({
       }
   }  
 
+
+  const getBanner = async (req,res)=>{
+    try {
+      const BannerImages = await Banner.find()
+       // Send the banners as a response
+      res.status(200).json({ message: 'Banners retrieved successfully', BannerImages }); 
+    } catch (error) {
+      res.status(500).json({ message: 'Error retrieving banners', error: error.message });
+    }
+  }
+
   module.exports = {
     addBanner,
     upload,
+    getBanner
   };
   

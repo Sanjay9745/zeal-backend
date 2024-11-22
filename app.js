@@ -26,6 +26,7 @@ app.use('/api/admin', require("./routes/admin/index"));
 app.use('/api/global-visa', require("./routes/global-visa/index"));
 app.use('/api/umrahaall', require('./routes/Umraha for all/index'))
 app.use('/api/banners', require('./routes/User/index'))
+app.use('/api/Enquiryss', require('./routes/EnquiryVisa/index'))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
