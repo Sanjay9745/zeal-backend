@@ -8,6 +8,14 @@ const PricingDetailSchema = new Schema({
     currency: { type: String}
 }, { _id: false });
 
+
+const Visapackage = new Schema({
+    DestinationorTour:{type:String},
+    Living:{type:String},
+    Date:{type:String},
+    Nationality:{type:String} 
+})
+
 // Schema for FAQ
 const FaqSchema = new Schema({
     question: { type: String, required: true },
