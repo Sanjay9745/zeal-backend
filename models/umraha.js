@@ -3,30 +3,40 @@ const { Schema } = mongoose;
 
 
 // Schema for Itinerary details
-const ItineraryDetailsSchema = new Schema({
-    title: { type: String },
-    icon: { type: String },
-    category: { type: String },
-    location: { type: String },  
-    room: { type: String },
+const HotelDetails = new Schema({
+    Hoteltitle: { type: String },
+    image: { type: String },
+    location: { type: String },
+    roomType: { type: String },
     checkIn: { type: String },
     checkout: { type: String }
 }, { _id: false });
 
+const TransportDetails = new Schema({
+    Transporttitle: { type: String },
+    image: { type: String },
+    from: { type: String },
+    to: { type: String },
+    time: {
+        timeTitle: { type: String }, // AM/PM
+        time: { type: String }
+    }
+})
+
 // Schema for Itinerary
 const ItinerarySchema = new Schema({
-    title: { type: String},
-    description: { type: String },
     place: { type: String },
-    startDate: { type: Date },
-    endDate: { type: Date },
-    details: [ItineraryDetailsSchema] 
+    description: { type: String },
+    ItineraryDay: { type: String },   //Day : 1/2/3/4
+    ItineraryDate: { type: String },
+    HotelDetails: { HotelDetails },
+    TransportDetails: { TransportDetails }
 }, { _id: false });
 
 // Schema for Pricing details
 const PricingDetailSchema = new Schema({
     title: { type: String },
-    amount: { type: Number},
+    amount: { type: Number },
     currency: { type: String }
 }, { _id: false });
 
@@ -38,17 +48,14 @@ const PolicySchema = new Schema({
 
 // Schema for FAQ
 const FaqSchema = new Schema({
-    question: { type: String},
+    question: { type: String },
     answer: { type: String }
 }, { _id: false });
 
 // Schema for Ratings
-const RatingSchema = new Schema({
-    reviews: [{ type: String }], // Array of review strings or a more complex object
-    stars: { type: Number, min: 0, max: 5, default: 4.0 },
-    ratingCount: { type: Number, default: 0 },
-    review: { type: String },
-}, { _id: false });
+// const DetailsSchema = new Schema({
+
+// }, { _id: false });
 
 // Main schema
 const UmrahaSchema = new Schema({
@@ -57,33 +64,45 @@ const UmrahaSchema = new Schema({
     images: [{ type: String }],
     thumbnail: { type: String },
 
-    details: Object,
+    packageDetails: {
+        Days: { type: String },
+        Nights: { type: String },
+        Country: { type: String },
+        Cities: { type: String },
+        TravelFrom: { type: String },
+        TravelTo: { type: String },
+        TravelDate: { type: String },
+        TravelTime: {
+            timeTitle: { type: String },
+            time: { type: String }
+        }
+    },
 
-    slug: {type: String},
-    
+    slug: { type: String },
+
     overview: { type: String },
     tourOverview: { type: String },
-    faculty: { type: String }, // Assuming an array of strings or more complex subdocuments
-    inclusion: { type: String },
-    exclusion: { type: String },
-    itinerary: ItinerarySchema,
-    timings: [{
-        title: { type: String },
-        time: { type: String }
-    }],
-
+    faculty: [{ type: String }], // Assuming an array of strings or more complex subdocuments
     pricing: {
+        adultNo: { type: String },
+        childNo: { type: String },
+        infantNo: { type: String },
         packageCost: [PricingDetailSchema],
-        tax: [PricingDetailSchema]
+        tax: [PricingDetailSchema],
+        totalAmount: { type: String }
     },
+    inclusion: [{ type: String }],
+    exclusion: [{ type: String }],
+    itinerary: [ItinerarySchema],
+
+    AdditionalInformation: [{ type: String }],
     bookingPolicy: {
         cancellation: { type: String },
         childPolicy: { type: String },
+        faq: [FaqSchema],
         otherPolicies: [PolicySchema] // To handle any additional dynamic policies
     },
-    faq: [FaqSchema],
-    // rating: RatingSchema
-}, { timestamps: true }); // Add timestamps for createdAt and updatedAt fields
+}, { timestamps: true });
 
 // Export the model
 module.exports = mongoose.model('Umraha for all ', UmrahaSchema);

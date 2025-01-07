@@ -71,73 +71,134 @@ console.log(UmrahaforAll);
 const BASE_URL = 'http://localhost:3002/uploads';
 
 module.exports.add = async (req, res) => {
-    console.log("fay");
-    
-    console.log("Requestimage :", req.body );
+    console.log("Request Body:", req.body);
 
     try {
-
+        // Handle images
         const images = req.files && req.files['images']
-            ? req.files['images'].map(file => `${BASE_URL}/images/${file.filename.replace(/\\/g, '/')}`) // Use forward slashes
+            ? req.files['images'].map(file => `${BASE_URL}/images/${file.filename.replace(/\\/g, '/')}`) // Normalize path
             : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
 
-        console.log(req.files, "farhan");
-
+        // Handle thumbnail
         const thumbnail = req.files && req.files['thumbnail']
-            ? `${BASE_URL}/thumbnails/${req.files['thumbnail'][0].filename.replace(/\\/g, '/')}` // Use forward slashes
+            ? `${BASE_URL}/thumbnails/${req.files['thumbnail'][0].filename.replace(/\\/g, '/')}` // Normalize path
             : (req.body.thumbnail || '');
 
-            
+        // Handle detailsImage
         const detailsImage = req.files && req.files['detailsImage']
-        ? `${BASE_URL}/detailsImage/${req.files['detailsImage'][0].filename.replace(/\\/g, '/')}` // Use forward slashes
-        : (req.body.detailsImage || '');
+            ? `${BASE_URL}/detailsImage/${req.files['detailsImage'][0].filename.replace(/\\/g, '/')}` // Normalize path
+            : (req.body.detailsImage || '');
 
-        const itinerary = JSON.parse(req.body.itinerary)
-        itinerary.details = itinerary.details.map((detail) => ({
-            ...detail,
-            detailsImage: detailsImage || '', 
-          }));        
+        // Parse nested JSON fields with safe parsing
+        const parseJSON = (field) => {
+            try {
+                return typeof field === 'string' ? JSON.parse(field) : field;
+            } catch (error) {
+                console.error(`Error parsing field ${field}:`, error.message);
+                return null;
+            }
+        };
 
+        const itinerary = parseJSON(req.body.itinerary) || [];
+        if (Array.isArray(itinerary.details)) {
+            itinerary.details = itinerary.details.map((detail) => ({
+                ...detail,
+                detailsImage: detailsImage || '',
+            }));
+        }
 
+        // Construct new UmrahaData document
         const newUmraha = new UmrahaData({
             ...req.body,
             images: images,
             thumbnail: thumbnail,
-            bookingPolicy: JSON.parse(req.body.bookingPolicy),
-            faq: JSON.parse(req.body.faq),
-            pricing: JSON.parse(req.body.pricing),
+            bookingPolicy: parseJSON(req.body.bookingPolicy),
+            faq: parseJSON(req.body.faq),
+            pricing: parseJSON(req.body.pricing),
+            packageDetails: parseJSON(req.body.packageDetails),
             itinerary: itinerary,
         });
 
+        // Save to database
         const savedUmraha = await newUmraha.save();
 
         res.status(200).json({ success: true, results: savedUmraha });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, error: error.message, message: "Error adding holiday" });
+        console.error("Error adding Umrah:", error.message);
+        res.status(500).json({ success: false, error: error.message, message: "Error adding Umrah" });
     }
 };
 
 // Update an existing Holiday by ID
 module.exports.update = async (req, res) => {
     try {
+        const { id } = req.params;  // Retrieve the ID from the route parameters
+        const updatePackage = req.body; // Data to update
 
-        const { id } = req.params;
-        const updatePackage = req.body;
-        console.log(updatePackage);
+        // Normalize file paths for images
+        const images = req.files && req.files['images']
+            ? req.files['images'].map(file => `${BASE_URL}/images/${file.filename.replace(/\\/g, '/')}`)
+            : (req.body.images && typeof req.body.images === 'string' ? JSON.parse(req.body.images) : []);
 
-        const updatedUmraha = await UmrahaData.findByIdAndUpdate(
-            id,
-            { ...updatePackage }, // Spread the updatePackage fields
-            { new: true, runValidators: true }
-        );
+        // Handle thumbnail image
+        const thumbnail = req.files && req.files['thumbnail']
+            ? `${BASE_URL}/thumbnails/${req.files['thumbnail'][0].filename.replace(/\\/g, '/')}`
+            : (req.body.thumbnail || '');
 
-        res.status(200).json({ success: true, results: updatedUmraha });
+        // Handle detailsImage file
+        const detailsImage = req.files && req.files['detailsImage']
+            ? `${BASE_URL}/detailsImage/${req.files['detailsImage'][0].filename.replace(/\\/g, '/')}`
+            : (req.body.detailsImage || '');
+
+        // Safely parse JSON fields
+        const parseJSON = (field) => {
+            try {
+                return typeof field === 'string' ? JSON.parse(field) : field;
+            } catch (error) {
+                console.error(`Error parsing field ${field}:`, error.message);
+                return null;
+            }
+        };
+
+        // Parse complex fields (itinerary, bookingPolicy, faq, etc.)
+        const itinerary = parseJSON(req.body.itinerary) || [];
+        if (Array.isArray(itinerary)) {
+            itinerary.forEach(item => {
+                if (item.details && Array.isArray(item.details)) {
+                    item.details = item.details.map(detail => ({
+                        ...detail,
+                        detailsImage: detailsImage || '', // Ensure detailsImage is included
+                    }));
+                }
+            });
+        }
+
+        // Prepare the update object
+        const updatedUmraha = {
+            ...updatePackage,
+            images: images,
+            thumbnail: thumbnail,
+            bookingPolicy: parseJSON(req.body.bookingPolicy),
+            faq: parseJSON(req.body.faq),
+            pricing: parseJSON(req.body.pricing),
+            packageDetails: parseJSON(req.body.packageDetails),
+            itinerary: itinerary,
+        };
+
+        // Perform the update operation
+        const result = await UmrahaData.findByIdAndUpdate(id, updatedUmraha, {
+            new: true, // Return the updated document
+            runValidators: true, // Ensure the update passes the schema validation
+        });
+
+        // Send a successful response
+        res.status(200).json({ success: true, results: result });
         console.log("Update successful");
 
     } catch (error) {
+        // Handle errors and send the response with error details
         console.error("Error during update:", error);
-        res.status(500).json({ success: false, message: "Error updating Holiday", error: error.message });
+        res.status(500).json({ success: false, message: "Error updating Umraha", error: error.message });
     }
 };
 
