@@ -9,18 +9,22 @@ const PricingDetailSchema = new Schema({
 }, { _id: false });
 
 
-const Visapackage = new Schema({
-    DestinationorTour:{type:String},
-    Living:{type:String},
-    Date:{type:String},
-    Nationality:{type:String} 
-})
 
 // Schema for FAQ
 const FaqSchema = new Schema({
     question: { type: String, required: true },
     answer: { type: String, required: true }
 }, { _id: false });
+
+// Schema for Visa Package
+const VisaPackageSchema = new Schema({
+    destinationOrTour: { type: String },
+    living: { type: String },
+    date: { type: String },
+    nationality: { type: String}
+}, { _id: false });
+
+
 
     // Schema for PricingWithCurrency
     const PricingWithCurrencySchema = new Schema({
@@ -52,6 +56,7 @@ const GlobalVisaSchema = new Schema({
         currency: { type: String },
         discountPercentage:{type: String},
         priceWithCurrency: [PricingWithCurrencySchema],//Optional if multiple currency comes
+        visaPackage: [VisaPackageSchema], // Array of Visa Packages
         footerText: { type: String }
     }],
     pricing: {

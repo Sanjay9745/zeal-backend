@@ -1,11 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// Schema for PDF links
-const PdfSchema = new Schema({
-    type: { type: String },
-    link: { type: String }
-});
+
 
 // Schema for Itinerary details
 const ItineraryDetailsSchema = new Schema({
@@ -46,14 +42,6 @@ const FaqSchema = new Schema({
     answer: { type: String }
 }, { _id: false });
 
-// Schema for Ratings
-const RatingSchema = new Schema({
-    reviews: [{ type: String }], // Array of review strings or a more complex object
-    stars: { type: String, default:"4.0"},
-    ratingCount: { type: String, default: "0" },
-    review: { type: String },
-    details: [{}]
-}, { _id: false });
 
 // Main schema
 const HolidaySchema = new Schema({
@@ -62,21 +50,7 @@ const HolidaySchema = new Schema({
     images: [{ type: String }],
     slug: { type: String, required: true, unique: true },
     thumbnail: { type: String },
-    pdf: [PdfSchema],
     details: Object,
-    /* {
-     share: { type: String },
-     fcb: { type: String },
-     from: { type: String },
-     to: { type: String },
-     duration: { type: String },
-     date: { type: String },
-     price: { type: String },
-     discount: { type: String },
-     discountPrice: { type: String },
-     discountPercentage: { type: String }
-     tags: [{ type: String }],
- }*/
     faculty: [{ type: String }],
     highlights: [{ type: String }],
     overview: { type: String },
@@ -92,17 +66,16 @@ const HolidaySchema = new Schema({
     pricing: {
         title: { type: String },
         description: { type: String },
-        packageCost: [],
-        tax: [],
+        packageCost: [PricingDetailSchema],
+        tax: [PricingDetailSchema],
         totalAmount: { type: String }
     },
     bookingPolicy: {
-        cancellation: {},
-        childPolicy: {},
-        otherPolicies: [] // To handle any additional dynamic policies
+        cancellation: [PolicySchema],
+        childPolicy: [PolicySchema],
+        otherPolicies: [PolicySchema] // To handle any additional dynamic policies
     },
     faq: [FaqSchema],
-    rating: RatingSchema,
     additionalInfo: { type: String },
 }, { timestamps: true }); // Add timestamps for createdAt and updatedAt fields
 

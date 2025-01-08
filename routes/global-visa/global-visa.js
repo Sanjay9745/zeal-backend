@@ -83,7 +83,7 @@ module.exports.add = async (req, res) => {
             
         });
         
-                
+               console.log(newGlobalVisa,"newGlobalVisa") 
      
 
         const savedGlobalVisa = await newGlobalVisa.save();
